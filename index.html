@@ -1,8 +1,8 @@
 <html>
 	<head>
-		<title>Game of Life</title>
+		<title>Conway's Game of Life</title>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
+		
 		<link rel="stylesheet" href="css/bootstrap.min.css">
 		<link rel="stylesheet" href="css/font-awesome.min.css">
 		<link rel="stylesheet" href="css/app.css">
@@ -12,11 +12,14 @@
 		<div class="col-md-10 col-md-offset-1">
 			<div class="panel panel-success">
 				<div class="panel-heading">
-					Game of Life
+					<span class="text-primary" style="font-weight: bold;">
+						<a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life" target="_blank">Conway's Game of Life &nbsp;&nbsp;&nbsp;<span class="fa fa-external-link"></span></a></span>
 					<span class="right" id="delta">0</span>
 				</div>
 				<div class="panel-body text-center">
-					<div class="col-md-12 text-center size" id="view"></div>
+					<div class="col-md-12 text-center">
+						<div class="size" id="view"></div>
+					</div>
 					<div class="col-md-12 library">
 						<img src="init/01.jpg">
 						<img src="init/02.jpg">
@@ -38,14 +41,19 @@
 						<ul class="dropdown-menu" id="neighbors">
 							<li><a href="#" data-val="1">1</a></li>
 							<li><a href="#" data-val="2" class="active">2</a></li>
+							<li><a href="#" data-val="2|3">2 or 3</a></li>
 							<li><a href="#" data-val="3">3</a></li>
+							<li><a href="#" data-val="3|4">3 or 4</a></li>
 							<li><a href="#" data-val="4">4</a></li>
+							<li><a href="#" data-val="4|5">4 or 5</a></li>
 							<li><a href="#" data-val="5">5</a></li>
+							<li><a href="#" data-val="5|6">5 or 6</a></li>
 							<li><a href="#" data-val="6">6</a></li>
+							<li><a href="#" data-val="6|6">6 or 7</a></li>
 							<li><a href="#" data-val="7">7</a></li>
 						</ul>
 					</div>
-					
+
 					<div class="btn-group dropup" role="group">
 						<button class="btn btn-default" id="refresh_label">Refresh timeout: 0.2s</button>
 						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">
@@ -82,11 +90,10 @@
 		<script src="js/bootstrap.min.js"></script>
 		<script src="js/wbw.js"></script>
 		<script type="text/javascript" defer="defer">
-			(function () {
+			$( document ).ready(function () {
 				var view = $("#view")[0];
 				var engine = new EngineController(view);
-//				<canvas class="buffer front_buffer"  width="800" height="600"></canvas>
-			})();
+			});
 		</script>
 	</body>
 </html>

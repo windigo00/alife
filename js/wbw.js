@@ -1,28 +1,16 @@
 
-var Atom = function (width, height, angle) {
-	this.width = width;
-	this.height = height;
-	this.angle = angle;
-}
-
-var Segment = function (children) {
-	this.children = children ? children : [];
-}
-
-
 var EngineController = function (view) {
 	this.view = $(view);
 	this.delta = $("#delta");
 	this.timer = null;
 	this.buffers = this.view.find('canvas');
 	
-	this.idealCount = 2;
+	this.idealCount = [2];
 	this.refreshTimeout = 200;
 	var _self = this;
 	if (this.buffers.length === 0) {
 		this.buffers = [null, null];
 		var canvas;
-		//<canvas class="buffer front_buffer"  width="800" height="600"></canvas>
 		for (var i = 0; i < this.buffers.length; i++) {
 			canvas = $('<canvas>').attr({width: this.view.width(), height: this.view.height()});
 			canvas.addClass('buffer');
@@ -45,12 +33,11 @@ var EngineController = function (view) {
 			});
 			this.buffers[i].addEventListener('mousemove', function(event){
 				if (event.buttons === 1) {
-//					console.log(event.offsetX, event.offsetY);
 					b2 = _self.contexts[_self.activeBufferIndex];
 					b2.fillStyle = "#ffffff";
 					b2.lineWidth = 3;
 					b2.beginPath();
-					b2.arc(event.offsetX, event.offsetY, 50, 0, 2*Math.PI, true); // Create the arc path.
+					b2.arc(event.layerX, event.layerY, 20, 0, 2*Math.PI, true); // Create the arc path.
 //					b2.fill();
 					b2.stroke();
 				}
@@ -71,25 +58,17 @@ EngineController.prototype.initialize = function () {
 		imgsLen--;
 		$(this).on('click', function () {
 			_self.setImage($(this));
-		})
-//		console.log('one loaded');
+		});
 		if (imgsLen === 0) {
-//			console.log('all loaded');
 			var canvas = _self.buffers[_self.activeBufferIndex];
 			_self.contexts[_self.activeBufferIndex].drawImage(
-					_self.image[0],
-					0, 0, _self.image[0].naturalWidth, _self.image[0].naturalHeight,
-					0, 0, canvas.width, canvas.height
-					);
+				_self.image[0],
+				0, 0, _self.image[0].naturalWidth, _self.image[0].naturalHeight,
+				0, 0, canvas.width, canvas.height
+			);
 		}
 	});
 	this.image = imgs.first().addClass("active");
-
-
-
-//	window.addEventListener('resize', function(event){
-//		console.log('resize');
-//	}, false);
 }
 
 EngineController.prototype.initUI = function () {
@@ -115,7 +94,10 @@ EngineController.prototype.initUI = function () {
 	
 	btn = $("#neighbors a");
 	btn.on('click', function (event) {
-		_self.idealCount = $(this).attr('data-val') * 1;
+		_self.idealCount = $(this).attr('data-val').split('|');
+		_self.idealCount[0] *= 1;
+		if (_self.idealCount.length > 1)
+			_self.idealCount[1] *= 1;
 		$("#neighbors_label").text('Ideal number of neighbors: '+_self.idealCount);
 	});
 	btn = $("#refresh a");
@@ -210,12 +192,10 @@ EngineController.prototype.clear = function (clearBackBuffer) {
 	var b2 = this.contexts[1 - this.activeBufferIndex];
 
 	b1.drawImage(
-			this.image[0],
-			0, 0, this.image[0].naturalWidth, this.image[0].naturalHeight,
-			0, 0, b1.canvas.width, b1.canvas.height
-			);
-//	b1.fillStyle = "#FFFFFF";
-//	b1.clearRect(0, 0, b2.canvas.width, b2.canvas.height);
+		this.image[0],
+		0, 0, this.image[0].naturalWidth, this.image[0].naturalHeight,
+		0, 0, b1.canvas.width, b1.canvas.height
+	);
 	if (clearBackBuffer === true) {
 		b2.fillStyle = "#FFFFFF";
 		b2.clearRect(0, 0, b2.canvas.width, b2.canvas.height);
@@ -233,9 +213,7 @@ EngineController.prototype.setImage = function (newImage) {
 EngineController.prototype.update = function () {
 	
 	var delta = new Date().getTime();
-	// console.log("Updating");
-	// _self.context.clearRect(0, 0, _self.context.innerWidth, _self.context.innerHeight);
-
+	
 	this.drawGeneration();
 	this.switchBuffers();
 	var _self = this;
@@ -250,16 +228,19 @@ EngineController.prototype.alive = function (pixels, idx) {
 	return (pixels[idx] < 128 && pixels[idx + 1] < 128 && pixels[idx + 2] < 128);
 }
 EngineController.prototype.willLive = function (pixels, idx) {
-//		console.log(pixels[idx + 3]);
-	return pixels[idx + 3] === this.idealCount;
+	idx += 3;
+	
+	if (this.idealCount.length === 1) {
+		return pixels[idx] === this.idealCount[0];
+	} else if(this.idealCount.length === 2) {
+		return pixels[idx] >= this.idealCount[0] && pixels[idx] <= this.idealCount[1];
+	}
 }
 EngineController.prototype.drawGeneration = function () {
 	var x, y, wh = 0;
 
 	var b1 = this.contexts[this.activeBufferIndex];
 	var b2 = this.contexts[1 - this.activeBufferIndex];
-	// b1.clearRect(0, 0, b1.innerWidth, b1.innerHeight);
-	// b2.fillStyle = "#FFFFFF";
 	var data = b1.getImageData(0, 0, b1.canvas.width, b1.canvas.height).data;
 	var data_out = b2.createImageData(b1.canvas.width, b1.canvas.height);
 	var data2 = data_out.data;
@@ -321,7 +302,6 @@ EngineController.prototype.drawGeneration = function () {
 		//   if has exactly 2 neighbours: it springs to life
 		//
 	}
-//	data_out.data = data2;
 	b2.putImageData(data_out, 0, 0);
 }
 

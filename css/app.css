@@ -1,12 +1,11 @@
 body { padding-top: 10px; }
 #view {
-	overflow: auto;
+	/*overflow: auto;*/
 	/*border: 1px solid #888;*/ 
 	position: relative;
 	text-align: center;
-	margin-left: auto;
-	margin-right: auto;
 	padding: 0;
+	margin: 0 auto;
 }
 
 .size {
@@ -53,4 +52,8 @@ input[type=file] {
 
 #delta {
 	float: right;
+}
+
+.panel-footer .btn-group {
+	margin-bottom: 5px;
 }
