@@ -68,7 +68,9 @@ EngineController.prototype.initialize = function () {
 			);
 		}
 	});
-	this.image = imgs.first().addClass("active");
+	this.image = imgs.first();
+	this.image.addClass("active");
+	
 }
 
 EngineController.prototype.initUI = function () {
@@ -87,7 +89,7 @@ EngineController.prototype.initUI = function () {
 		}
 	});
 
-	btn = $("#clear");
+	btn = $("#clear,#reset");
 	btn.on('click', function (event) {
 		_self.clear(true);
 	});
