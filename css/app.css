@@ -1,0 +1,56 @@
+body { padding-top: 10px; }
+#view {
+	overflow: auto;
+	/*border: 1px solid #888;*/ 
+	position: relative;
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 0;
+}
+
+.size {
+	height: 300px; 
+	width : 300px; 
+}
+.buffer {
+	position: absolute; 
+	left: 0px; 
+	top: 0px; 
+}
+.front_buffer { 
+	visibility: visible; 
+}
+.back_buffer { 
+	visibility: hidden; 
+
+}
+.btn-group {
+	visibility: hidden;
+}
+
+.library {
+	padding-top: 5px;
+}
+.library img {
+	width: auto;
+	height: 64px;
+}
+.library img.active {
+	border: 1px solid #aaa;
+}
+
+input[type=file] {
+	padding: 5px;
+}
+
+.btn-group > .btn+.dropdown-toggle {
+  padding-right: 8px;
+  padding-left: 8px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+
+#delta {
+	float: right;
+}
