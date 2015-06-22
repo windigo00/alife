@@ -32,58 +32,86 @@
 					</div>
 				</div>
 				<div class="panel-footer">
-					<div class="btn-group" role="group">
-						<button id="btn"   class="btn btn-default"><i class="fa fa-play"></i> Start</button>
-						<button id="clear" class="btn btn-danger"><i class="fa fa-times"></i> Clear</button>
-					</div>
-					<div class="btn-group dropup" role="group">
-						<button class="btn btn-default" id="neighbors_label">Ideal number of neighbors: 2</button>
-						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">
-							<span class="caret"></span>
-							<span class="sr-only">aaa</span>
-						</button>
-						<ul class="dropdown-menu" id="neighbors">
-							<li><a href="#" data-val="1">1</a></li>
-							<li><a href="#" data-val="2" class="active">2</a></li>
-							<li><a href="#" data-val="2|3">2 or 3</a></li>
-							<li><a href="#" data-val="3">3</a></li>
-							<li><a href="#" data-val="3|4">3 or 4</a></li>
-							<li><a href="#" data-val="4">4</a></li>
-							<li><a href="#" data-val="4|5">4 or 5</a></li>
-							<li><a href="#" data-val="5">5</a></li>
-							<li><a href="#" data-val="5|6">5 or 6</a></li>
-							<li><a href="#" data-val="6">6</a></li>
-							<li><a href="#" data-val="6|6">6 or 7</a></li>
-							<li><a href="#" data-val="7">7</a></li>
-						</ul>
-					</div>
+					<div class="panel panel-primary">
+						<div class="panel-heading">
+							Simulation
+						</div>
+						<div class="panel-body">
+							<div class="btn-group" role="group">
+								<button id="play"   class="btn btn-lg btn-default"><i class="fa fa-play"></i> Start</button>
+								<button id="clear" class="btn btn-lg btn-danger"><i class="fa fa-times"></i> Clear</button>
+							</div>
+							<div class="btn-group dropup" role="group">
+								<button id="neighbors_label" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">
+									<span>Ideal number of neighbors: 2</span> <span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" id="neighbors">
+									<li><a data-val="1">1</a></li>
+									<li><a data-val="2" class="active">2</a></li>
+									<li><a data-val="2|3">2 or 3</a></li>
+									<li><a data-val="3">3</a></li>
+									<li><a data-val="3|4">3 or 4</a></li>
+									<li><a data-val="4">4</a></li>
+									<li><a data-val="4|5">4 or 5</a></li>
+									<li><a data-val="5">5</a></li>
+									<li><a data-val="5|6">5 or 6</a></li>
+									<li><a data-val="6">6</a></li>
+									<li><a data-val="6|6">6 or 7</a></li>
+									<li><a data-val="7">7</a></li>
+								</ul>
+							</div>
 
-					<div class="btn-group dropup" role="group">
-						<button class="btn btn-default" id="refresh_label">Refresh timeout: 0.2s</button>
-						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">
-							<span class="caret"></span>
-							<span class="sr-only">aaa</span>
-						</button>
-						<ul class="dropdown-menu" id="refresh">
-							<li><a href="#" data-val="10"  >0.01s</a></li>
-							<li><a href="#" data-val="20"  >0.02s</a></li>
-							<li><a href="#" data-val="100" >0.10s</a></li>
-							<li><a href="#" data-val="200" >0.20s</a></li>
-							<li><a href="#" data-val="500" >0.50s</a></li>
-							<li><a href="#" data-val="1000">1.00s</a></li>
-							<li><a href="#" data-val="2000">2.00s</a></li>
-							<li><a href="#" data-val="5000">5.00s</a></li>
-						</ul>
+							<div class="btn-group dropup" role="group">
+								<button id="refresh_label" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">
+									<span>Refresh timeout: 0.2s</span> <span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" id="refresh">
+									<li><a data-val="10"  >0.01s</a></li>
+									<li><a data-val="20"  >0.02s</a></li>
+									<li><a data-val="100" >0.10s</a></li>
+									<li><a data-val="200" >0.20s</a></li>
+									<li><a data-val="500" >0.50s</a></li>
+									<li><a data-val="1000">1.00s</a></li>
+									<li><a data-val="2000">2.00s</a></li>
+									<li><a data-val="5000">5.00s</a></li>
+								</ul>
+							</div>
+							<div class="btn-group dropup" role="group">
+								<input class="btn btn-default" type="text" name="w" size="3">
+								<span  class="btn btn-default">x</span>
+								<input class="btn btn-default" type="text" name="h" size="3">
+								<button id="resize" class="btn btn-default"><i class="fa fa-arrows-alt"></i> Set simulation size</button>
+							</div>
+							<div class="btn-group" role="group">
+								<input  id="file"  class="btn btn-default" type="file" name="upl">
+								<button id="add"   class="btn btn-success"><i class="fa fa-plus"></i> Add Image</button>
+							</div>
+						</div>
 					</div>
-					<div class="btn-group dropup" role="group">
-						<input class="btn btn-default" type="text" name="w" size="3">
-						<span  class="btn btn-default">x</span>
-						<input class="btn btn-default" type="text" name="h" size="3">
-						<button id="resize" class="btn btn-default"><i class="fa fa-arrows-alt"></i> Set simulation size</button>
-					</div>
-					<div class="btn-group" role="group">
-						<input  id="file"  class="btn btn-default" type="file" name="upl">
-						<button id="add"   class="btn btn-success"><i class="fa fa-plus"></i> Add Image</button>
+					<div class="panel panel-primary">
+						<div class="panel-heading">
+							Drawing properties
+						</div>
+						<div class="panel-body">
+							<div class="row">
+								<div class="col-md-2">
+									Shape:<br>
+									<ul>
+										<li><label><input type="radio" name="shape"> <span class="fa fa-square"></span></label></li>
+										<li><label><input type="radio" name="shape"> <span class="fa fa-square-o"></span></label></li>
+										<li><label><input type="radio" name="shape"> <span class="fa fa-circle"></span></label></li>
+										<li><label><input type="radio" name="shape"> <span class="fa fa-circle-o"></span></label></li>
+									</ul>
+								</div><div class="col-md-2 btn-group dropup" role="group">
+									<label>Line width: <input class="btn btn-default" type="text" name="lw" size="3"></label>
+								</div><div class="col-md-2">
+									<ul>
+										<li><label>Stroke: <input type="checkbox" name="stroke"></label></li>
+										<li><label>Fill: <input type="checkbox" name="fill"></label></li>
+									</ul>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

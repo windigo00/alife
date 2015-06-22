@@ -78,7 +78,7 @@ EngineController.prototype.initUI = function () {
 
 	$('.panel-footer *').css({ visibility: "visible" });
 
-	var btn = $("#btn");
+	var btn = $("#play");
 	btn.on('click', function (event) {
 		if (_self.timer === null) {
 			_self.start();
@@ -100,12 +100,12 @@ EngineController.prototype.initUI = function () {
 		_self.idealCount[0] *= 1;
 		if (_self.idealCount.length > 1)
 			_self.idealCount[1] *= 1;
-		$("#neighbors_label").text('Ideal number of neighbors: '+_self.idealCount);
+		$("#neighbors_label span").first().text('Ideal number of neighbors: '+_self.idealCount);
 	});
 	btn = $("#refresh a");
 	btn.on('click', function (event) {
 		_self.refreshTimeout = $(this).attr('data-val') * 1;
-		$("#refresh_label").text('Refresh timeout: '+$(this).text());
+		$("#refresh_label span").first().text('Refresh timeout: '+$(this).text());
 	});
 	
 	btn = $("#resize");

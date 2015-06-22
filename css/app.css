@@ -9,8 +9,8 @@ body { padding-top: 10px; }
 }
 
 .size {
-	height: 300px; 
-	width : 300px; 
+	height: 200px; 
+	width : 200px; 
 }
 .buffer {
 	position: absolute; 
@@ -43,12 +43,12 @@ input[type=file] {
 	padding: 5px;
 }
 
-.btn-group > .btn+.dropdown-toggle {
+/*.btn-group > .btn+.dropdown-toggle {
   padding-right: 8px;
   padding-left: 8px;
   padding-top: 14px;
   padding-bottom: 14px;
-}
+}*/
 
 #delta {
 	float: right;
@@ -56,4 +56,9 @@ input[type=file] {
 
 .panel-footer .btn-group {
 	margin-bottom: 5px;
+}
+
+.row ul {
+	list-style-type: none;
+	padding: 0;
 }
