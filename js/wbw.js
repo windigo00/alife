@@ -249,7 +249,9 @@ EngineController.prototype.update = function () {
 }
 
 EngineController.prototype.alive = function (pixels, idx) {
-	return (pixels[idx] < 128 && pixels[idx + 1] < 128 && pixels[idx + 2] < 128);
+//	return ((pixels[idx] + pixels[idx + 1] + pixels[idx + 2])/3 < 128);
+	return (pixels[idx] < 128);
+//	return (pixels[idx] < 128 && pixels[idx + 1] < 128 && pixels[idx + 2] < 128);
 }
 EngineController.prototype.willLive = function (pixels, idx) {
 	idx += 3;
