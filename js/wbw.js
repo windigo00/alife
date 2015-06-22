@@ -2,11 +2,14 @@
 var EngineController = function (view) {
 	this.view = $(view);
 	this.delta = $("#delta");
+	this.gen = $("#gen");
 	this.timer = null;
 	this.buffers = this.view.find('canvas');
 	
 	this.idealCount = [2];
 	this.refreshTimeout = 200;
+	
+	this.generation = 0;
 	
 	this.shape = "circle";
 	this.lineWidth = 3;
@@ -109,12 +112,16 @@ EngineController.prototype.initUI = function () {
 		_self.clear(true);
 	});
 	
-	btn = $("#neighbors a");
+	btn = $("#neighbors_label");
+//	console.log(this.idealCount.toString());
+//	console.log(btn);
+	console.log(btn.parent().find('input[name="nmin"]').length);
+	btn.parent().find('input[name="nmin"]').val(this.idealCount.toString());
 	btn.on('click', function (event) {
-		_self.idealCount = $(this).attr('data-val').split('|');
-		_self.idealCount[0] *= 1;
-		if (_self.idealCount.length > 1)
-			_self.idealCount[1] *= 1;
+		_self.idealCount = $(this).parent().find('input[name="nmin"]').val().split(",");
+		for(var i=0; i < _self.idealCount.length; i++) {
+			_self.idealCount[i] *= 1;
+		}
 		$("#neighbors_label span").first().text('Ideal number of neighbors: '+_self.idealCount);
 	});
 	btn = $("#refresh a");
@@ -226,6 +233,7 @@ EngineController.prototype.clear = function (clearBackBuffer) {
 		b2.fillStyle = "#FFFFFF";
 		b2.clearRect(0, 0, b2.canvas.width, b2.canvas.height);
 	}
+	this.generation = 0;
 }
 
 EngineController.prototype.setImage = function (newImage) {
@@ -241,10 +249,12 @@ EngineController.prototype.update = function () {
 	var delta = new Date().getTime();
 	
 	this.drawGeneration();
+	this.generation++;
 	this.switchBuffers();
 	var _self = this;
 	delta = new Date().getTime() - delta;
 	this.delta.text('FPS: ' + Math.round(((1000/delta)* 100)) / 100);
+	this.gen.text('Generation: ' + this.generation);
 	this.timer = setTimeout(function () {
 		_self.update();
 	}, this.refreshTimeout >= delta ? this.refreshTimeout - delta : 1 );
@@ -257,16 +267,17 @@ EngineController.prototype.alive = function (pixels, idx) {
 }
 EngineController.prototype.willLive = function (pixels, idx) {
 	idx += 3;
-	
-	if (this.idealCount.length === 1) {
-		return pixels[idx] === this.idealCount[0];
-	} else if(this.idealCount.length === 2) {
-		return pixels[idx] >= this.idealCount[0] && pixels[idx] <= this.idealCount[1];
+	var ret = false;
+	for(var i=0; i < this.idealCount.length; i++) {
+		if (pixels[idx] === this.idealCount[i]) {
+			return true;
+		}
 	}
+	return ret;
 }
 EngineController.prototype.drawGeneration = function () {
 	var x, y, wh = 0;
-
+	
 	var b1 = this.contexts[this.activeBufferIndex];
 	var b2 = this.contexts[1 - this.activeBufferIndex];
 	var data = b1.getImageData(0, 0, b1.canvas.width, b1.canvas.height).data;
@@ -276,48 +287,53 @@ EngineController.prototype.drawGeneration = function () {
 	var nextIdx, dl;
 	tmp2 = b1.canvas.width * 4;
 	dl = data.length;
-
-	for (var i = tmp = x = y = 0; i < dl; i += 4, tmp++, x++) {
-		if (x >= b1.canvas.width) {
+	var cw = b1.canvas.width;
+	var cww = cw - 1;
+	var ch = b1.canvas.height;
+	r = 0, g = 1, b = 2, a = 3;
+	for (tmp = x = y = 0; r < dl; r+=4, g+=4, b+=4, a+=4, tmp++, x++) {
+//		continue;
+		if (x >= cw) {
 			x = 0;
 			y++;
 		}
-		alive1 = this.alive(data, i);
-		r = i, g = i + 1, b = i + 2, a = i + 3;
+		alive1 = data[r] < 128 ? 1 : 0;
+//		r = i, g = i + 1, b = i + 2, a = i + 3;
 //		data2[a] = data2[a] % 255;
-		if (x < b1.canvas.width - 1) {
-			nextIdx = i + 4;// one on the right
-			if (this.alive(data, nextIdx))
+		if (x < cww) {
+			nextIdx = r + 4;// one on the right
+			if (data[nextIdx] < 128)
 				data2[a] += 1;
 			// let neighbours know, it's alive
-			data2[nextIdx + 3] += alive1 ? 1 : 0;
+			data2[nextIdx + 3] += alive1;
 		}
-		if (y < b1.canvas.height) {
-			nextIdx = i + tmp2; //one below
-			if (this.alive(data, nextIdx))
+		if (y < ch) {
+			nextIdx = r + tmp2; //one below
+			if (data[nextIdx] < 128)
 				data2[a] += 1;
 			// let neighbours know, it's alive
-			data2[nextIdx + 3] += alive1 ? 1 : 0;
+			data2[nextIdx + 3] += alive1;
 			if (x > 0) {
-				nextIdx = i + tmp2 - 4; // one down one left
-				if (this.alive(data, nextIdx))
+				nextIdx = r + tmp2 - 4; // one down one left
+				if (data[nextIdx] < 128)
 					data2[a] += 1;
 				// let neighbours know, it's alive
-				data2[nextIdx + 3] += alive1 ? 1 : 0;
+				data2[nextIdx + 3] += alive1;
 			}
-			if (x < b1.canvas.width - 1) {
-				nextIdx = i + tmp2 + 4; // one down one right
-				if (this.alive(data, nextIdx))
+			if (x < cww) {
+				nextIdx = r + tmp2 + 4; // one down one right
+				if (data[nextIdx] < 128)
 					data2[a] += 1;
 				// let neighbours know, it's alive
 				data2[nextIdx + 3] += alive1 ? 1 : 0;
 			}
 		}
 
-		var status = !this.willLive(data2, i);
-		data2[r] = status ? 255 : 0;
-		data2[g] = status ? 255 : 0;
-		data2[b] = status ? 255 : 0;
+		var status = !this.willLive(data2, r) ? 255 : 0;
+		
+		data2[r] = status;
+		data2[g] = status;
+		data2[b] = status;
 		data2[a] = 255;
 
 		// TODO: process cell status

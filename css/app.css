@@ -10,8 +10,8 @@ body { padding-top: 10px; }
 }
 
 .size {
-	height: 200px; 
-	width : 200px; 
+	height: 500px; 
+	width : 500px; 
 }
 .buffer {
 	position: absolute; 
@@ -62,4 +62,11 @@ input[type=file] {
 .row ul {
 	list-style-type: none;
 	padding: 0;
+}
+
+.panel-heading span.right {
+	float: right;
+	clear: left;
+	margin-left: 5px;
+	min-width: 100px;
 }
