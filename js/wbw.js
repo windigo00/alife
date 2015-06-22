@@ -7,6 +7,12 @@ var EngineController = function (view) {
 	
 	this.idealCount = [2];
 	this.refreshTimeout = 200;
+	
+	this.shape = "circle";
+	this.lineWidth = 3;
+	this.stroke = true;
+	this.fill = true;
+	
 	var _self = this;
 	if (this.buffers.length === 0) {
 		this.buffers = [null, null];
@@ -34,16 +40,16 @@ var EngineController = function (view) {
 			this.buffers[i].addEventListener('mousemove', function(event){
 				if (event.buttons === 1) {
 					b2 = _self.contexts[_self.activeBufferIndex];
-					b2.fillStyle = "#ffffff";
-					b2.lineWidth = 3;
 					b2.beginPath();
+					b2.fillStyle = "#000000";
+					b2.stroStyle = "#000000";
+					b2.lineWidth = _self.lineWidth;
 					b2.arc(event.layerX, event.layerY, 20, 0, 2*Math.PI, true); // Create the arc path.
-//					b2.fill();
-					b2.stroke();
+					if (_self.fill) b2.fill();
+					if (_self.stroke) b2.stroke();
 				}
 			}, false);
 		}
-
 		this.initialize();
 	}
 }
@@ -107,6 +113,15 @@ EngineController.prototype.initUI = function () {
 		_self.refreshTimeout = $(this).attr('data-val') * 1;
 		$("#refresh_label span").first().text('Refresh timeout: '+$(this).text());
 	});
+	
+	btn = $('input[name="shape"]');
+	btn.on('click', function (event) { _self.shape = $(this).val(); });
+	btn = $('input[name="lw"]');
+	btn.on('change', function (event) { _self.lineWidth = $(this).val()*1; });
+	btn = $('input[name="stroke"]');
+	btn.on('click', function (event) { _self.troke = $(this)[0].checked; });
+	btn = $('input[name="fill"]');
+	btn.on('click', function (event) { _self.fill = $(this)[0].checked; });
 	
 	btn = $("#resize");
 	btn.parent().find('input[name="w"]').val(_self.buffers[_self.activeBufferIndex].width);
