@@ -34,7 +34,7 @@
 				</div>
 			</div>
 			
-			<div class="panel panel-primary">
+			<div class="panel panel-primary controlls">
 				<div class="panel-heading">
 					Simulation
 				</div>
@@ -87,13 +87,13 @@
 					</div>
 				</div>
 			</div>
-			<div class="panel panel-primary">
+			<div class="panel panel-primary controlls">
 				<div class="panel-heading">
 					Drawing properties
 				</div>
 				<div class="panel-body">
 					<div class="row">
-						<div class="col-md-2">
+						<div class="col-md-4 col-sm-4">
 							Shape:<br>
 							<ul>
 								<li><label><input type="radio" name="shape" value="point"> <span class="fa fa-dot-circle-o"></span> Point</label></li>
@@ -102,9 +102,9 @@
 								<li><label><input type="radio" name="shape" value="circle" checked="checked"> <span class="fa fa-circle"></span> Circle</label></li>
 								<!--<li><label><input type="radio" name="shape" value=""> <span class="fa fa-circle-o"></span></label></li>-->
 							</ul>
-						</div><div class="col-md-2 btn-group dropup" role="group">
+						</div><div class="col-md-4 col-sm-4 btn-group dropup" role="group">
 							<label>Line width: <input class="btn btn-default" type="text" name="lw" size="3"></label>
-						</div><div class="col-md-2">
+						</div><div class="col-md-4 col-sm-4">
 							<ul>
 								<li><label>Stroke: <input type="checkbox" name="stroke"></label></li>
 								<li><label>Fill: <input type="checkbox" name="fill"></label></li>
@@ -114,16 +114,15 @@
 				</div>
 			</div>
 			
-			<div><a href="http://www.toplist.cz/" target="_top">
-						<img src="http://toplist.cz/count.asp?id=1151783&logo=btn" border="0" alt="TOPlist" width="80" height="15" />
-					</a></div>
+			<div><a href="http://www.toplist.cz/" target="_top"><img src="http://toplist.cz/count.asp?id=1151783&logo=btn" border="0" alt="TOPlist" width="80" height="15" /></a></div>
 		</div>
 
 		<!-- SCRIPTS -->
 		<script src="js/jquery-2.1.0.min.js"></script>
 		<script src="js/bootstrap.min.js"></script>
 		<script src="js/wbw.js"></script>
-		<script type="text/javascript" defer="defer">
+		<script src="js/controlls.js"></script>
+		<script type="text/javascript">
 			$( document ).ready(function () {
 				var view = $("#view")[0];
 				var engine = new EngineController(view);

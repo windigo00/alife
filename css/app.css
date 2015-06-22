@@ -10,8 +10,8 @@ body { padding-top: 10px; }
 }
 
 .size {
-	height: 500px; 
-	width : 500px; 
+	height: 200px; 
+	width : 200px; 
 }
 .buffer {
 	position: absolute; 
@@ -25,8 +25,8 @@ body { padding-top: 10px; }
 	visibility: hidden; 
 
 }
-.btn-group {
-	visibility: hidden;
+.controlls {
+	display: none;
 }
 
 .library {

@@ -1,24 +1,54 @@
-
 var EngineController = function (view) {
 	this.view = $(view);
-	this.delta = $("#delta");
-	this.gen = $("#gen");
+	
 	this.timer = null;
 	this.buffers = this.view.find('canvas');
-	
+
 	this.idealCount = [2];
 	this.refreshTimeout = 200;
-	
+
 	this.generation = 0;
-	
-	this.shape = "circle";
-	this.lineWidth = 3;
-	this.stroke = true;
-	this.fill = true;
-	
-	var _self = this;
+
+	this.__initBuffers();
+	this.contexts = [];
+	this.activeBufferIndex = 0;
+
+	var canvas = this.buffers[0];
+
+	if (canvas && canvas.getContext) {
+		for (var i = 0; i < this.buffers.length; i++) {
+			this.contexts.push(this.__initGL(this.buffers[i]));
+
+			$(this.buffers[i]).on('mousedown', function(event){ 
+				event.preventDefault ? event.preventDefault() : event.returnValue = false; 
+			}).on('mousemove', function(event){
+//					if (event.buttons === 1) {
+//					b2 = _self.contexts[_self.activeBufferIndex];
+//					b2.fillStyle = "#000000";
+//					b2.stroStyle = "#000000";
+//					b2.lineWidth = _self.lineWidth;
+//					if (_self.shape == "circle") {
+//						b2.beginPath();
+//						b2.arc(event.layerX, event.layerY, 20, 0, 2*Math.PI, true); // Create the arc path.
+//						if (_self.fill) b2.fill();
+//						if (_self.stroke) b2.stroke();
+//					} else if (_self.shape == "point") {
+//						if (_self.fill) b2.fillRect(event.layerX, event.layerY, _self.lineWidth, _self.lineWidth);
+//					} else {
+//						if (_self.fill) b2.fillRect(event.layerX-10, event.layerY-10, 20, 20);
+//					}
+//					}
+			});
+		}
+		
+		this.__initialize();
+	}
+}
+
+EngineController.prototype.__initBuffers =function (){
+//		var _self = this;
 	if (this.buffers.length === 0) {
-		this.buffers = [null, null];
+		this.buffers = [null];
 		var canvas;
 		for (var i = 0; i < this.buffers.length; i++) {
 			canvas = $('<canvas>').attr({width: this.view.width(), height: this.view.height()});
@@ -29,184 +59,25 @@ var EngineController = function (view) {
 			this.buffers[i] = canvas[0];
 		}
 	}
-	this.contexts = [];
-	this.activeBufferIndex = 0;
+}
 
-	var canvas = this.buffers[0];
-	var b2;
-	if (canvas && canvas.getContext) {
-		for (var i = 0; i < this.buffers.length; i++) {
-			this.contexts.push(this.buffers[i].getContext('2d'));
-			this.buffers[i].addEventListener('mousedown', function(event){ 
-				event.preventDefault ? event.preventDefault() : event.returnValue = false; 
-			});
-			this.buffers[i].addEventListener('mousemove', function(event){
-				if (event.buttons === 1) {
-					b2 = _self.contexts[_self.activeBufferIndex];
-					b2.fillStyle = "#000000";
-					b2.stroStyle = "#000000";
-					b2.lineWidth = _self.lineWidth;
-					if (_self.shape == "circle") {
-						b2.beginPath();
-						b2.arc(event.layerX, event.layerY, 20, 0, 2*Math.PI, true); // Create the arc path.
-						if (_self.fill) b2.fill();
-						if (_self.stroke) b2.stroke();
-					} else if (_self.shape == "point") {
-						if (_self.fill) b2.fillRect(event.layerX, event.layerY, _self.lineWidth, _self.lineWidth);
-					} else {
-						if (_self.fill) b2.fillRect(event.layerX-10, event.layerY-10, 20, 20);
-						
-						
-					}
-					
-				}
-			}, false);
-		}
-		this.initialize();
+EngineController.prototype.__initGL = function(canvas) {
+	var gl = null;
+	try {
+		gl = canvas.getContext("experimental-webgl");
+		gl.viewportWidth = canvas.width;
+		gl.viewportHeight = canvas.height;
+	} catch (e) {
 	}
+	if (!gl) {
+		alert("Could not initialise WebGL, sorry :-(");
+	}
+	return gl;
 }
 
-EngineController.prototype.initialize = function () {
-
-	this.initUI();
-	var _self = this;
-	var imgs = $('.library img');
-	var imgsLen = imgs.length;
-	imgs.on('load', function () {
-		imgsLen--;
-		$(this).on('click', function () {
-			_self.setImage($(this));
-		});
-		if (imgsLen === 0) {
-			var canvas = _self.buffers[_self.activeBufferIndex];
-			_self.contexts[_self.activeBufferIndex].drawImage(
-				_self.image[0],
-				0, 0, _self.image[0].naturalWidth, _self.image[0].naturalHeight,
-				0, 0, canvas.width, canvas.height
-			);
-		}
-	});
-	this.image = imgs.first();
-	this.image.addClass("active");
+EngineController.prototype.__initialize = function () {
+	this.__initUI();
 	
-}
-
-EngineController.prototype.initUI = function () {
-	var _self = this;
-
-	$('.panel-primary *').css({ visibility: "visible" });
-
-	var btn = $("#play");
-	btn.on('click', function (event) {
-		if (_self.timer === null) {
-			_self.start();
-			$(this).html("<i class=\"fa fa-pause\"></i> Pause");
-		} else {
-			_self.stop();
-			$(this).html("<i class=\"fa fa-play\"></i> Play");
-		}
-	});
-
-	btn = $("#clear,#reset");
-	btn.on('click', function (event) {
-		_self.clear(true);
-	});
-	
-	btn = $("#neighbors_label");
-//	console.log(this.idealCount.toString());
-//	console.log(btn);
-	console.log(btn.parent().find('input[name="nmin"]').length);
-	btn.parent().find('input[name="nmin"]').val(this.idealCount.toString());
-	btn.on('click', function (event) {
-		_self.idealCount = $(this).parent().find('input[name="nmin"]').val().split(",");
-		for(var i=0; i < _self.idealCount.length; i++) {
-			_self.idealCount[i] *= 1;
-		}
-		$("#neighbors_label span").first().text('Ideal number of neighbors: '+_self.idealCount);
-	});
-	btn = $("#refresh a");
-	btn.on('click', function (event) {
-		_self.refreshTimeout = $(this).attr('data-val') * 1;
-		$("#refresh_label span").first().text('Refresh timeout: '+$(this).text());
-	});
-	
-	btn = $('input[name="shape"]');
-	btn.on('click', function (event) { _self.shape = $(this).val(); });
-	btn = $('input[name="lw"]');
-	btn.on('change', function (event) { _self.lineWidth = $(this).val()*1; });
-	btn = $('input[name="stroke"]');
-	btn.on('click', function (event) { _self.troke = $(this)[0].checked; });
-	btn = $('input[name="fill"]');
-	btn.on('click', function (event) { _self.fill = $(this)[0].checked; });
-	
-	btn = $("#resize");
-	btn.parent().find('input[name="w"]').val(_self.buffers[_self.activeBufferIndex].width);
-	btn.parent().find('input[name="h"]').val(_self.buffers[_self.activeBufferIndex].height);
-	btn.on('click', function (event) {
-		var inputs = $(this).parent().find('input');
-		var css = {};
-		var l = 0;
-		var v;
-		
-		for(var i=0; i < inputs.length; i++) {
-			v = $(inputs[i]);
-			switch (v.attr('name')) {
-				case 'w':
-					if (v.val() !== "") {
-						css.width = v.val();
-						l++;
-					}
-					break;
-				case 'h':
-					if (v.val() !== "") {
-						css.height = v.val();
-						l++;
-					}
-					break;
-			}
-		}
-		if (l) {
-			_self.view.css(css);
-			for(var i=0; i < _self.buffers.length; i++) {
-				$(_self.buffers[i]).attr({width: _self.view.width(), height: _self.view.height()});
-				_self.contexts[i] = _self.buffers[i].getContext('2d');
-			}
-			_self.clear();
-		}
-	});
-
-	btn = $("#add");
-	btn.on('click', function (event) {
-		var img = $("#file").prop('files');
-		if (img.length > 0) {
-			if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
-				console.log('The File APIs are not fully supported in this browser.');
-				return;
-			}
-
-			if (!img[0]) {
-				alert("Please select a file before clicking 'Load'");
-			}
-			else {
-				var file = img[0];
-				var fr = new FileReader();
-				fr.onload = function () {
-					var newImg = $('<img src="' + this.result + '">');
-					$('.library').append(newImg);
-					newImg.on('load', function () {
-						$("#file").val('');
-						$(this).on('click', function () {
-							_self.setImage($(this));
-							
-						});
-					});
-				}
-				//fr.readAsText(file);
-				fr.readAsDataURL(file);
-			}
-
-		}
-	});
 }
 
 EngineController.prototype.start = function () {
@@ -245,9 +116,9 @@ EngineController.prototype.setImage = function (newImage) {
 	}
 }
 EngineController.prototype.update = function () {
-	
+
 	var delta = new Date().getTime();
-	
+
 	this.drawGeneration();
 	this.generation++;
 	this.switchBuffers();
@@ -277,7 +148,7 @@ EngineController.prototype.willLive = function (pixels, idx) {
 }
 EngineController.prototype.drawGeneration = function () {
 	var x, y, wh = 0;
-	
+
 	var b1 = this.contexts[this.activeBufferIndex];
 	var b2 = this.contexts[1 - this.activeBufferIndex];
 	var data = b1.getImageData(0, 0, b1.canvas.width, b1.canvas.height).data;
@@ -326,7 +197,7 @@ EngineController.prototype.drawGeneration = function () {
 		}
 
 		var status = !this.willLive(data2, r) ? 255 : 0;
-		
+
 		data2[r] = data2[g] = data2[b] = status;
 		data2[a] = 255;
 
