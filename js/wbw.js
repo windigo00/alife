@@ -40,13 +40,20 @@ var EngineController = function (view) {
 			this.buffers[i].addEventListener('mousemove', function(event){
 				if (event.buttons === 1) {
 					b2 = _self.contexts[_self.activeBufferIndex];
-					b2.beginPath();
 					b2.fillStyle = "#000000";
 					b2.stroStyle = "#000000";
 					b2.lineWidth = _self.lineWidth;
-					b2.arc(event.layerX, event.layerY, 20, 0, 2*Math.PI, true); // Create the arc path.
-					if (_self.fill) b2.fill();
-					if (_self.stroke) b2.stroke();
+					if (_self.shape == "circle") {
+						b2.beginPath();
+						b2.arc(event.layerX, event.layerY, 20, 0, 2*Math.PI, true); // Create the arc path.
+						if (_self.fill) b2.fill();
+						if (_self.stroke) b2.stroke();
+					} else {
+						if (_self.fill) b2.fillRect(event.layerX-10, event.layerY-10, 20, 20);
+						
+						
+					}
+					
 				}
 			}, false);
 		}
