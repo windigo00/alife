@@ -292,7 +292,6 @@ EngineController.prototype.drawGeneration = function () {
 	var ch = b1.canvas.height;
 	r = 0, g = 1, b = 2, a = 3;
 	for (tmp = x = y = 0; r < dl; r+=4, g+=4, b+=4, a+=4, tmp++, x++) {
-//		continue;
 		if (x >= cw) {
 			x = 0;
 			y++;
@@ -300,40 +299,35 @@ EngineController.prototype.drawGeneration = function () {
 		alive1 = data[r] < 128 ? 1 : 0;
 //		r = i, g = i + 1, b = i + 2, a = i + 3;
 //		data2[a] = data2[a] % 255;
+//		continue;
 		if (x < cww) {
 			nextIdx = r + 4;// one on the right
-			if (data[nextIdx] < 128)
-				data2[a] += 1;
+			if (data[nextIdx] < 128) data2[a] += 1;
 			// let neighbours know, it's alive
-			data2[nextIdx + 3] += alive1;
+			if (alive1) data2[nextIdx + 3] += 1;
 		}
 		if (y < ch) {
 			nextIdx = r + tmp2; //one below
-			if (data[nextIdx] < 128)
-				data2[a] += 1;
+			if (data[nextIdx] < 128) data2[a] += 1;
 			// let neighbours know, it's alive
-			data2[nextIdx + 3] += alive1;
+			if (alive1) data2[nextIdx + 3] += 1;
 			if (x > 0) {
 				nextIdx = r + tmp2 - 4; // one down one left
-				if (data[nextIdx] < 128)
-					data2[a] += 1;
+				if (data[nextIdx] < 128) data2[a] += 1;
 				// let neighbours know, it's alive
-				data2[nextIdx + 3] += alive1;
+				if (alive1) data2[nextIdx + 3] += 1;
 			}
 			if (x < cww) {
 				nextIdx = r + tmp2 + 4; // one down one right
-				if (data[nextIdx] < 128)
-					data2[a] += 1;
+				if (data[nextIdx] < 128) data2[a] += 1;
 				// let neighbours know, it's alive
-				data2[nextIdx + 3] += alive1 ? 1 : 0;
+				if (alive1) data2[nextIdx + 3] += 1;
 			}
 		}
 
 		var status = !this.willLive(data2, r) ? 255 : 0;
 		
-		data2[r] = status;
-		data2[g] = status;
-		data2[b] = status;
+		data2[r] = data2[g] = data2[b] = status;
 		data2[a] = 255;
 
 		// TODO: process cell status
