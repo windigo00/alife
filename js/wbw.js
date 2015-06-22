@@ -89,7 +89,7 @@ EngineController.prototype.initialize = function () {
 EngineController.prototype.initUI = function () {
 	var _self = this;
 
-	$('.panel-footer *').css({ visibility: "visible" });
+	$('.panel-primary *').css({ visibility: "visible" });
 
 	var btn = $("#play");
 	btn.on('click', function (event) {
