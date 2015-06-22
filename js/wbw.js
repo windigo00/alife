@@ -48,6 +48,8 @@ var EngineController = function (view) {
 						b2.arc(event.layerX, event.layerY, 20, 0, 2*Math.PI, true); // Create the arc path.
 						if (_self.fill) b2.fill();
 						if (_self.stroke) b2.stroke();
+					} else if (_self.shape == "point") {
+						if (_self.fill) b2.fillRect(event.layerX, event.layerY, _self.lineWidth, _self.lineWidth);
 					} else {
 						if (_self.fill) b2.fillRect(event.layerX-10, event.layerY-10, 20, 20);
 						
@@ -271,20 +273,18 @@ EngineController.prototype.drawGeneration = function () {
 	var data_out = b2.createImageData(b1.canvas.width, b1.canvas.height);
 	var data2 = data_out.data;
 	var r, g, b, a, x, y, tmp, tmp2, alive1;
-	var nextIdx;
+	var nextIdx, dl;
 	tmp2 = b1.canvas.width * 4;
+	dl = data.length;
 
-	for (var i = tmp = x = y = 0;
-			i < data.length;
-			i += 4, tmp++, x++
-			) {
+	for (var i = tmp = x = y = 0; i < dl; i += 4, tmp++, x++) {
 		if (x >= b1.canvas.width) {
 			x = 0;
 			y++;
 		}
 		alive1 = this.alive(data, i);
 		r = i, g = i + 1, b = i + 2, a = i + 3;
-		data2[a] = data2[a] % 255;
+//		data2[a] = data2[a] % 255;
 		if (x < b1.canvas.width - 1) {
 			nextIdx = i + 4;// one on the right
 			if (this.alive(data, nextIdx))
